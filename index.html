@@ -10,6 +10,7 @@
         @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
         @keyframes fadeOut{from{opacity:1;}to{opacity:0;}}
         @keyframes reveal{0%{opacity:1} 50%{opacity:0;} 100%{opacity:1;}}
+        @keyframes rotate{from{transform: rotateY(0deg);} to{transform: rotateY(180deg);}}
         .reveal{animation-name:reveal;animation-duration:2s;}
         .fadeOut{animation-name:fadeOut;animation-duration:1.5s;animation-fill-mode:forwards;}
         .fadeIn{animation-name:fadeIn;animation-duration:1.5s;animation-fill-mode:forwards;}
@@ -21,8 +22,8 @@
         #choose-word{position:absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);;width:fit-content;margin:auto;text-align:center;font-size:200%;}
         #enter-word-wrapper{width:fit-content;background-color:var(--yellow);border-radius:10px;padding:1px 5px 1px 5px;}
         #enter-word{background-color:inherit;border:none;outline-width:0;font-size:inherit;}
-        #tick-btn{background-color:inherit;color:green;border:none;padding:5px;border-radius:10px;outline-width:0;font-size:50%;}
-        #tick-btn:hover{background-color:green;color:var(--white);cursor:pointer;}
+        #tick-btn, #challenge-btn{background-color:inherit;color:green;border:none;padding:5px;border-radius:10px;outline-width:0;font-size:50%;}
+        #tick-btn:hover, #challenge-btn:hover{background-color:green;color:var(--white);cursor:pointer;}
         #generate-word{border:none;background-color:var(--red);font-family:monospace;transition-duration:0.25s;border:1px solid var(--red);font-size:inherit;}
         #generate-word:hover{background-color:var(--blue);color:var(--red);}
         #choose-guesses{position:absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);margin:auto;width:fit-content;text-align:center;color:var(--orange);font-size:200%;}
@@ -43,8 +44,71 @@
         .tile-fadeOut{animation-name:fadeOut;animation-duration:0.25s;animation-fill-mode:forwards;}
         .tile-fadeIn{animation-name:fadeIn;animation-duration:0.25s;animation-fill-mode:forwards;}
          @media screen and (max-width: 768px) {.key-btn{font-size:175%;}}
+         game-title{
+            display: block;
+            position: absolute;
+            color: var(--white);
+            font-size: 200%;
+            user-select: none;            
+         }
+         game-info{
+            color: grey;
+            display: inline-block;
+            transition-duration: 0.25s;
+            animation-duration: 2s;
+            animation-name: rotate;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+         }
+         game-info:hover{
+            cursor: pointer;
+            color: var(--white);
+         }
+         game-tutorial{
+            display: none;
+            position: absolute;
+            text-align: left;
+            width: 300px;
+            overflow-wrap: break-word;
+            transform: translateX(-50%);
+            background-color: var(--blue);
+            filter: brightness(1.25);
+            top: 1%;
+            left: 50%;
+            padding: 1%;
+            border-radius: 25px;
+             z-index: 100;            
+         }
+         game-tutorial span{
+            margin: auto;
+            display: table;
+            color:  var(--red);
+            font-size: 200%;
+            user-select: none;           
+         }
+         game-tutorial-close{            
+            transition-duration: 0.25s;
+         }
+         game-tutorial-close:hover{
+            color: var(--white);
+            cursor: pointer;
+         }
+         @keyframes fadeOutZ{to{opacity: 0;visibility: hidden;}}         
+         game-tutorial[show="false"]{
+            display: block;
+            animation-name: fadeOutZ;
+            animation-fill-mode: forwards;
+            animation-duration: 0.5s;            
+         }
+         game-tutorial[show="true"]{
+            display: block;
+            animation-name: fadeIn;
+            animation-fill-mode: forwards;
+            animation-duration: 0.5s;
+            
+         }
     </style>
-    <script>
+    <script>        
         var ans;const letters = 4;var guesses;
         var current_guess = 0; var current_letter = 0;
         let inputFunc;
@@ -234,16 +298,40 @@
             };
             document.addEventListener('keydown', inputFunc);
         }
+        function getTutorial(){
+            document.querySelector("game-tutorial").setAttribute("show", "true");
+        }
+        function removeTutorial(){            
+            document.querySelector("game-tutorial").setAttribute("show", "false");                       
+        }        
     </script>
 </head>
 <body>
+    <game-title>COWS & BULLS
+        <game-info onclick="getTutorial();">&#9432;</game-info>
+    </game-title>
+    <game-tutorial>
+        <span>TUTORIAL <game-tutorial-close onclick="removeTutorial();">&#10006;</game-tutorial-close></span><br>
+        GUESS THE WORD IN 6, 8 OR 10 TRIES<br><br>
+        EACH GUESS MUST BE A VALID 4-LETTER WORD<br><br>
+        AFTER EACH GUESS YOU WILL BE SHOWN THE "COWS" & "BULLS"<br><br>
+        "COWS" DENOTES NUMBER OF LETTERS THAT ARE IN THE ANSWER BUT IN DIFFERENT POSITIONS <br><br>
+        "BULLS" DENOTES NUMBER OF LETTERS THAT ARE IN THE ANSWER AND IN THE CORRECT POSITION<br><br>
+        EXAMPLE: "TASK" IS THE ANSWER<br><br>
+        GUESSING "TAKE" WILL GIVE YOU 2 "BULLS" & 1 "COW"<br><br>
+        "T" & "A" ARE "BULLS", "K" IS A "COW"
+        <br><br>NOTE: WORDS WITH REPEATING LETTERS ARE ALLOWED FOR ADDED DIFFICULTY
+        
+    </game-tutorial>
 <div id="choose-word"  class="fadeIn" >
     <div id="enter-word-wrapper">
 <input placeholder="Enter 4-letter word" id="enter-word"/>
 <button id="tick-btn" onclick="getWord();">&#10003;</button>
+<!-- <button id="challenge-btn" onclick="getWord();" style="font-size:25%">CHALLENGE</button>
+ -->
     </div>
     OR<br>
-    GENERATE A <button id="generate-word" onclick="generateWord();">RANDOM</button> ONE!
+    GENERATE A <button id="generate-word" onclick="generateWord();">RANDOM</button> ONE!<br>   
 </div>
 <div id="choose-guesses" style="display:none" class="fadeIn">
 CHOOSE DIFFICULTY!<br><br>
