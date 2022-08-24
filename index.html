@@ -42,8 +42,7 @@
         color:var(--red);background-color:var(--yellow);border-radius:10px;font-size:50%;padding:5%;
         animation-name:slideModal;animation-duration:4s;animation-fill-mode:forwards;}
         .tile-fadeOut{animation-name:fadeOut;animation-duration:0.25s;animation-fill-mode:forwards;}
-        .tile-fadeIn{animation-name:fadeIn;animation-duration:0.25s;animation-fill-mode:forwards;}
-         @media screen and (max-width: 768px) {.key-btn{font-size:175%;}}
+        .tile-fadeIn{animation-name:fadeIn;animation-duration:0.25s;animation-fill-mode:forwards;}        
          game-title{
             display: block;
             position: absolute;
@@ -107,6 +106,7 @@
             animation-duration: 0.5s;
             
          }
+         @media screen and (max-width: 768px) {.key-btn{font-size:175%;} game-title{font-size:100%; z-index:1}
     </style>
     <script>        
         var ans;const letters = 4;var guesses;
